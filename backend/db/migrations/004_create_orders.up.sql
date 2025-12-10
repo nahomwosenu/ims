@@ -8,8 +8,10 @@ CREATE TABLE IF NOT EXISTS orders (
   item_name TEXT NOT NULL,
   quantity INTEGER NOT NULL,
   total_price DECIMAL(10, 2) NOT NULL,
+  payment_method TEXT NOT NULL,
   notes TEXT,
   status TEXT DEFAULT 'pending',
+  created_by_user_id INTEGER REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

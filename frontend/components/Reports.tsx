@@ -24,6 +24,7 @@ export function Reports({ lang, currentUser }: ReportsProps) {
   const [salesReport, setSalesReport] = useState<any>(null);
   const [purchaseReport, setPurchaseReport] = useState<any>(null);
   const [inventoryReport, setInventoryReport] = useState<any>(null);
+  const [ordersReport, setOrdersReport] = useState<any>(null);
   const { toast } = useToast();
   const t = translations[lang];
 
@@ -82,6 +83,16 @@ export function Reports({ lang, currentUser }: ReportsProps) {
     }
   };
 
+  const loadOrdersReport = async () => {
+    try {
+      const report = await backend.report.orders({ startDate, endDate });
+      setOrdersReport(report);
+    } catch (error) {
+      console.error("Failed to load orders report:", error);
+      toast({ title: t.error, description: t.failedToLoadReport, variant: "destructive" });
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -130,6 +141,7 @@ export function Reports({ lang, currentUser }: ReportsProps) {
         <Tabs defaultValue="sales" className="mt-4">
           <TabsList>
             <TabsTrigger value="sales">{t.salesReport}</TabsTrigger>
+            <TabsTrigger value="orders">Orders Report</TabsTrigger>
             <TabsTrigger value="purchase">{t.purchaseReport}</TabsTrigger>
             <TabsTrigger value="inventory">{t.inventoryReport}</TabsTrigger>
           </TabsList>
@@ -181,6 +193,116 @@ export function Reports({ lang, currentUser }: ReportsProps) {
                     ))}
                   </TableBody>
                 </Table>
+              </>
+            )}
+          </TabsContent>
+
+          <TabsContent value="orders" className="space-y-4">
+            <Button onClick={loadOrdersReport}>
+              <FileText className="mr-2 h-4 w-4" />
+              {t.generateReport}
+            </Button>
+            
+            {ordersReport && (
+              <>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Total Order Revenue</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">{ordersReport.totalRevenue.toFixed(2)} ETB</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Total Orders</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">{ordersReport.totalOrders}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Orders by Payment Method</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Payment Method</TableHead>
+                            <TableHead>Count</TableHead>
+                            <TableHead>Revenue</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {ordersReport.byPaymentMethod.map((item: any, i: number) => (
+                            <TableRow key={i}>
+                              <TableCell className="capitalize">{item.payment_method.replace("_", " ")}</TableCell>
+                              <TableCell>{item.count}</TableCell>
+                              <TableCell>{parseFloat(item.total_revenue).toFixed(2)} ETB</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Orders by Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Count</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {ordersReport.byStatus.map((item: any, i: number) => (
+                            <TableRow key={i}>
+                              <TableCell className="capitalize">{item.status}</TableCell>
+                              <TableCell>{item.count}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">Orders by Item</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{t.item}</TableHead>
+                          <TableHead>{t.quantity}</TableHead>
+                          <TableHead>{t.revenue}</TableHead>
+                          <TableHead>Order Count</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {ordersReport.items.map((item: any, i: number) => (
+                          <TableRow key={i}>
+                            <TableCell>{item.itemName}</TableCell>
+                            <TableCell>{item.totalQuantity}</TableCell>
+                            <TableCell>{item.totalRevenue.toFixed(2)} ETB</TableCell>
+                            <TableCell>{item.ordersCount}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
               </>
             )}
           </TabsContent>

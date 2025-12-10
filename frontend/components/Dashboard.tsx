@@ -11,6 +11,7 @@ import { SalesManagement } from "./SalesManagement";
 import { PurchaseRequests } from "./PurchaseRequests";
 import { Reports } from "./Reports";
 import { Announcements } from "./Announcements";
+import OrderManagement from "./OrderManagement";
 
 interface DashboardProps {
   currentUser: CurrentUser;
@@ -25,9 +26,9 @@ export function Dashboard({ currentUser, onLogout }: DashboardProps) {
     const tabs = [];
     
     if (currentUser.role === "manager") {
-      tabs.push("users", "announcements", "purchases", "items", "reports");
+      tabs.push("users", "announcements", "purchases", "items", "orders", "reports");
     } else if (currentUser.role === "finance") {
-      tabs.push("items", "sales", "purchases", "reports");
+      tabs.push("items", "sales", "orders", "purchases", "reports");
     } else if (currentUser.role === "store") {
       tabs.push("items", "reports");
     }
@@ -87,6 +88,9 @@ export function Dashboard({ currentUser, onLogout }: DashboardProps) {
             {availableTabs.includes("sales") && (
               <TabsTrigger value="sales">{t.sales}</TabsTrigger>
             )}
+            {availableTabs.includes("orders") && (
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+            )}
             {availableTabs.includes("purchases") && (
               <TabsTrigger value="purchases">{t.purchaseRequests}</TabsTrigger>
             )}
@@ -116,6 +120,12 @@ export function Dashboard({ currentUser, onLogout }: DashboardProps) {
           {availableTabs.includes("sales") && (
             <TabsContent value="sales">
               <SalesManagement lang={lang} currentUser={currentUser} />
+            </TabsContent>
+          )}
+
+          {availableTabs.includes("orders") && (
+            <TabsContent value="orders">
+              <OrderManagement />
             </TabsContent>
           )}
 

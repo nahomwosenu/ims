@@ -35,6 +35,7 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
 export class Client {
     public readonly announcement: announcement.ServiceClient
     public readonly item: item.ServiceClient
+    public readonly order: order.ServiceClient
     public readonly purchase: purchase.ServiceClient
     public readonly report: report.ServiceClient
     public readonly sale: sale.ServiceClient
@@ -55,6 +56,7 @@ export class Client {
         const base = new BaseClient(this.target, this.options)
         this.announcement = new announcement.ServiceClient(base)
         this.item = new item.ServiceClient(base)
+        this.order = new order.ServiceClient(base)
         this.purchase = new purchase.ServiceClient(base)
         this.report = new report.ServiceClient(base)
         this.sale = new sale.ServiceClient(base)
@@ -211,6 +213,50 @@ export namespace item {
 /**
  * Import the endpoint handlers to derive the types for the client.
  */
+import { create as api_order_create_create } from "~backend/order/create";
+import { list as api_order_list_list } from "~backend/order/list";
+import { updateStatus as api_order_update_status_updateStatus } from "~backend/order/update_status";
+
+export namespace order {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.create = this.create.bind(this)
+            this.list = this.list.bind(this)
+            this.updateStatus = this.updateStatus.bind(this)
+        }
+
+        public async create(params: RequestType<typeof api_order_create_create>): Promise<ResponseType<typeof api_order_create_create>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/orders`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_order_create_create>
+        }
+
+        public async list(): Promise<ResponseType<typeof api_order_list_list>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/orders`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_order_list_list>
+        }
+
+        public async updateStatus(params: RequestType<typeof api_order_update_status_updateStatus>): Promise<ResponseType<typeof api_order_update_status_updateStatus>> {
+            // Construct the body with only the fields which we want encoded within the body (excluding query string or header fields)
+            const body: Record<string, any> = {
+                status: params.status,
+            }
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/orders/${encodeURIComponent(params.order_id)}/status`, {method: "POST", body: JSON.stringify(body)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_order_update_status_updateStatus>
+        }
+    }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
 import { approve as api_purchase_approve_approve } from "~backend/purchase/approve";
 import { create as api_purchase_create_create } from "~backend/purchase/create";
 import { list as api_purchase_list_list } from "~backend/purchase/list";
@@ -271,6 +317,7 @@ export namespace purchase {
  * Import the endpoint handlers to derive the types for the client.
  */
 import { inventory as api_report_inventory_inventory } from "~backend/report/inventory";
+import { orders as api_report_orders_orders } from "~backend/report/orders";
 import { purchase as api_report_purchase_purchase } from "~backend/report/purchase";
 import { sales as api_report_sales_sales } from "~backend/report/sales";
 
@@ -282,6 +329,7 @@ export namespace report {
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
             this.inventory = this.inventory.bind(this)
+            this.orders = this.orders.bind(this)
             this.purchase = this.purchase.bind(this)
             this.sales = this.sales.bind(this)
         }
@@ -293,6 +341,18 @@ export namespace report {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/reports/inventory`, {method: "GET", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_report_inventory_inventory>
+        }
+
+        public async orders(params: RequestType<typeof api_report_orders_orders>): Promise<ResponseType<typeof api_report_orders_orders>> {
+            // Convert our params into the objects we need for the request
+            const query = makeRecord<string, string | string[]>({
+                endDate:   params.endDate,
+                startDate: params.startDate,
+            })
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/reports/orders`, {query, method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_report_orders_orders>
         }
 
         /**
