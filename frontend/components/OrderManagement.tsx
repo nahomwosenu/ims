@@ -54,6 +54,7 @@ export default function OrderManagement() {
   const [items, setItems] = useState<Item[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<string | null>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -97,6 +98,15 @@ export default function OrderManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const item = items.find((i) => i.id === parseInt(formData.item_id));
+    console.log("###item", item, formData.quantity);
+    if (!item || !item.quantity || parseInt(item.quantity) <= parseInt(formData.quantity)) {
+      setErrors("Insufficient stock for the selected item.");
+      return;
+    }
+
+    setErrors(null);
+
     setLoading(true);
 
     try {
@@ -346,6 +356,8 @@ export default function OrderManagement() {
                   placeholder="Additional notes or special instructions..."
                 />
               </div>
+
+              {errors && <div className="text-red-500">{errors}</div>}
 
               <div className="flex justify-end space-x-2">
                 <Button

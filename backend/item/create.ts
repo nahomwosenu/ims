@@ -7,6 +7,7 @@ export interface CreateItemRequest {
   description?: string;
   quantity: number;
   price?: number;
+  quality?: string;
 }
 
 export interface Item {
@@ -15,6 +16,7 @@ export interface Item {
   name: string;
   description?: string;
   quantity: number;
+  quality?: string;
   price?: number;
   createdAt: Date;
   updatedAt: Date;
@@ -25,15 +27,15 @@ export const create = api<CreateItemRequest, Item>(
   { expose: true, method: "POST", path: "/items", auth: true },
   async (req) => {
     const item = await db.queryRow<Item>`
-      INSERT INTO items (code, name, description, quantity, price)
-      VALUES (${req.code}, ${req.name}, ${req.description || null}, ${req.quantity}, ${req.price || null})
+      INSERT INTO items (code, name, description, quantity, price, quality)
+      VALUES (${req.code}, ${req.name}, ${req.description || null}, ${req.quantity}, ${req.price || null}, ${req?.quality || null})
       RETURNING id, code, name, description, quantity, price, created_at as "createdAt", updated_at as "updatedAt"
     `;
-    
+
     if (!item) {
       throw new Error("Failed to create item");
     }
-    
+
     return item;
   }
 );
