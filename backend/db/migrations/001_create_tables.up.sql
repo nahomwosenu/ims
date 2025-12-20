@@ -16,6 +16,7 @@ CREATE TABLE items (
   name TEXT NOT NULL,
   description TEXT,
   quantity BIGINT NOT NULL DEFAULT 0,
+  quality TEXT,
   price DOUBLE PRECISION,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
