@@ -27,13 +27,13 @@ INSERT INTO lov (category, value, created_by_user_id) VALUES
 ('addresses', 'ሻራ', 1),
 ('addresses', 'ጫኖ', 1),
 ('addresses', 'ሃይለ ሪዞርት', 1),
-('addresses', 'ኤርፖርት'),
-('addresses', 'አዞ ራንች'),
-('addresses', 'ዶርዜ ስፈር'),
-('addresses', 'እትዮፈሽረ'),
-('addresses', 'ግዞላ '),
-('addresses', 'ስሌ'),
-('addresses', 'ሸሌ');
+('addresses', 'ኤርፖርት', 1),
+('addresses', 'አዞ ራንች', 1),
+('addresses', 'ዶርዜ ስፈር', 1),
+('addresses', 'እትዮፈሽረ', 1),
+('addresses', 'ግዞላ ', 1),
+('addresses', 'ስሌ', 1),
+('addresses', 'ሸሌ', 1);
  
 
 
