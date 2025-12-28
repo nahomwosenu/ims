@@ -1,5 +1,5 @@
 import { SQLDatabase } from "encore.dev/storage/sqldb";
 
-export default new SQLDatabase("db4", {
+export default new SQLDatabase("db5", {
   migrations: "./migrations",
 });

@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Dashboard } from "./components/Dashboard";
 import { LoginPage } from "./components/LoginPage";
 import { useAuth } from "./context/auth";
+import Home from "./components/HomePage";
 
 const PUBLISHABLE_KEY = "pk_test_bWFnaWNhbC1tb25hcmNoLTE3LmNsZXJrLmFjY291bnRzLmRldiQ";
 
@@ -15,9 +16,14 @@ export interface CurrentUser {
 
 function AppInner() {
   const { user: currentUser, logout } = useAuth();
+  const currentPath = window.location.pathname;
 
-  if (!currentUser) {
+  if (currentPath === "/login" && !currentUser) {
     return <LoginPage />;
+  }
+
+  if (currentPath === "/") {
+    return <Home />;
   }
 
   return (

@@ -20,6 +20,13 @@ interface DashboardProps {
 
 export function Dashboard({ currentUser, onLogout }: DashboardProps) {
   const [lang, setLang] = useState<"en" | "am">("en");
+
+  console.log("Rendering Dashboard with currentUser:", currentUser);
+  if (!currentUser) {
+    console.error("No current user found in Dashboard component", currentUser);
+    return null;
+  }
+
   const t = translations[lang];
 
   const getAvailableTabs = () => {

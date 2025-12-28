@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import backend from "~backend/client";
 import type { CurrentUser } from "../App";
 import { translations } from "../lib/translations";
+import { uploadImage } from "@/lib/utils";
 
 interface AnnouncementsProps {
   lang: "en" | "am";
@@ -19,7 +20,7 @@ interface AnnouncementsProps {
 export function Announcements({ lang, currentUser }: AnnouncementsProps) {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({ title: "", content: "" });
+  const [formData, setFormData] = useState({ title: "", content: "", imageData: "", imageFileName: "" });
   const { toast } = useToast();
   const t = translations[lang];
 
@@ -39,22 +40,28 @@ export function Announcements({ lang, currentUser }: AnnouncementsProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       await backend.announcement.create({
         ...formData,
         createdBy: currentUser.id,
       });
-      
+
       toast({ title: t.success, description: t.announcementCreated });
       setDialogOpen(false);
-      setFormData({ title: "", content: "" });
+      setFormData({ title: "", content: "", imageData: "", imageFileName: "" });
       loadAnnouncements();
     } catch (error) {
       console.error("Failed to create announcement:", error);
       toast({ title: t.error, description: t.failedToCreateAnnouncement, variant: "destructive" });
     }
   };
+
+  // uses util.uploadImage to upload image and get imagekit url
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = await uploadImage(e.target.files![0]);
+    return url;
+  }
 
   return (
     <Card>
@@ -107,7 +114,22 @@ export function Announcements({ lang, currentUser }: AnnouncementsProps) {
                     required
                   />
                 </div>
-                
+
+                <div className="space-y-2" >
+                  <Label htmlFor="featureImage">Image/Photo</Label>
+                  <Input
+                    id="featureImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = await handleUploadImage(e);
+                        setFormData({ ...formData, imageData: url, imageFileName: file.name });
+                      }
+                    }}
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="content">{t.content}</Label>
                   <Textarea
@@ -119,12 +141,40 @@ export function Announcements({ lang, currentUser }: AnnouncementsProps) {
                   />
                 </div>
               </div>
-              
+
               <DialogFooter className="mt-4">
                 <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>{t.cancel}</Button>
                 <Button type="submit">{t.publish}</Button>
               </DialogFooter>
             </form>
+            {/* POST/ANOUNCEMENT preview */}
+            <div className="">
+              <h3 className="mt-6 mb-2 text-lg font-semibold">Preview</h3>
+              <span className="text-sm text-muted-foreground">{t.previewDesc}</span>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-lg">{formData.title || t.titlePlaceholder}</CardTitle>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date().toLocaleDateString()}
+                    </span>
+                  </div>
+                  <CardDescription>
+                    {t.by} {currentUser.role}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {formData.imageData && (
+                    <img
+                      src={formData.imageData}
+                      alt="Announcement"
+                      className="mb-4 max-h-60 w-full object-cover"
+                    />
+                  )}
+                  <p className="whitespace-pre-wrap">{formData.content || t.contentPlaceholder}</p>
+                </CardContent>
+              </Card>
+            </div>
           </DialogContent>
         </Dialog>
       </CardContent>

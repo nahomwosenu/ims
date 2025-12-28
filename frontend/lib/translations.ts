@@ -1,3 +1,5 @@
+import { preview } from "vite";
+
 export const translations = {
   en: {
     // General
@@ -133,6 +135,7 @@ export const translations = {
     announcementCreated: "Announcement created successfully",
     failedToLoadAnnouncements: "Failed to load announcements",
     failedToCreateAnnouncement: "Failed to create announcement",
+    previewDesc: "This is how your announcement will look once published."
   },
 
   am: {
@@ -269,5 +272,6 @@ export const translations = {
     announcementCreated: "ማስታወቂያ በተሳካ ሁኔታ ተፈጥሯል",
     failedToLoadAnnouncements: "ማስታወቂያዎችን መጫን አልተሳካም",
     failedToCreateAnnouncement: "ማስታወቂያን መፍጠር አልተሳካም",
+    previewDesc: "ይህ ማስታወቂያዎ ከተለጠፈ በኋላ እንዴት እንደሚመስል ነው।"
   },
 };

@@ -10,7 +10,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@clerk/backend": "^1.27.0",
-        "encore.dev": "^1.52.1",
+        "encore.dev": "^1.53.2",
       },
       "devDependencies": {
         "typescript": "^5.8.3",
@@ -358,7 +358,7 @@
 
     "electron-to-chromium": ["electron-to-chromium@1.5.262", "", {}, "sha512-NlAsMteRHek05jRUxUR0a5jpjYq9ykk6+kO0yRaMi5moe7u0fVIOeQ3Y30A8dIiWFBNUoQGi1ljb1i5VtS9WQQ=="],
 
-    "encore.dev": ["encore.dev@1.52.1", "", {}, "sha512-tGIwlp29Jqx9zLaR+cO1byfpRF8wKWczdQQ0222lOiVI2XnS+p4OmtfJgv1Rf5cnGAnVgDpQEk3gGWewpBVQgg=="],
+    "encore.dev": ["encore.dev@1.53.2", "", {}, "sha512-NfQuUe/Vvm77KkkVywI3zYxEOg9r3xDyYVIg/z0uskwj2IxIEY1501ForA27/kv+Q5m2OdXiS6x6Ox62ckCptQ=="],
 
     "enhanced-resolve": ["enhanced-resolve@5.18.3", "", { "dependencies": { "graceful-fs": "^4.2.4", "tapable": "^2.2.0" } }, "sha512-d4lC8xfavMeBjzGr2vECC3fsGXziXZQyJxD868h2M/mBI3PwAuODxAkLkq5HYuvrPYcUtiLzsTo8U3PgX3Ocww=="],
 
@@ -505,5 +505,7 @@
     "@radix-ui/react-primitive/@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.3", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A=="],
 
     "@radix-ui/react-select/@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.3", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A=="],
+
+    "frontend/encore.dev": ["encore.dev@1.52.1", "", {}, "sha512-tGIwlp29Jqx9zLaR+cO1byfpRF8wKWczdQQ0222lOiVI2XnS+p4OmtfJgv1Rf5cnGAnVgDpQEk3gGWewpBVQgg=="],
   }
 }
