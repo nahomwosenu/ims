@@ -24284,8 +24284,11 @@ class BaseClient {
         init.headers = { ...init.headers, ...authData.headers };
       }
     }
+    let url = this.baseURL + path;
+    url = url.replace(/\/api\//g, "/");
+    console.log("####API: Making request to modified URL:", url, "with init:", init);
     const queryString = query ? "?" + encodeQuery(query) : "";
-    const response = await this.fetcher(this.baseURL + path + queryString, init);
+    const response = await this.fetcher(url + queryString, init);
     if (!response.ok) {
       let body = { code: "unknown", message: `request failed: status ${response.status}` };
       try {
